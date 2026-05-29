@@ -1,9 +1,9 @@
-// src/app/admin/login/actions.js
+// app/web-ku/prosesLogin.js (atau src/app/web-ku/prosesLogin.js)
 'use server'
 
 import { revalidatePath } from 'next/cache'
 import { redirect } from 'next/navigation'
-import { createClient } from '@/lib/supabase/serve'
+import { createClient } from '@/lib/supabase/serve'  // Pastikan path ini benar
 
 export async function login(prevState, formData) {
   const supabase = await createClient()
@@ -11,7 +11,6 @@ export async function login(prevState, formData) {
   const email = formData.get('email')
   const password = formData.get('password')
 
-  // Validasi sederhana
   if (!email || !password) {
     return { error: 'Email dan password harus diisi' }
   }
