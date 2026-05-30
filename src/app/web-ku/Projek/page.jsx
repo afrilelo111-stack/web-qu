@@ -1,9 +1,11 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
+import { useRouter } from 'next/navigation'
 import Navbar from '@/app/web-ku/components/nav'
 import { FolderKanban, ExternalLink, Code2, Image as ImageIcon, X, ArrowUpRight } from 'lucide-react'
 import { projects } from '../data/projects'
+import { createClient } from '@/lib/supabase/client'
 
 /**
  * 📸 KOMPONEN SLIDER GAMBAR OTOMATIS
@@ -202,7 +204,6 @@ function ProjekContent() {
                   <Code2 size={14} className="text-black" />
                   {activeProject.tech.map((t) => (
                     <span key={t} className="bg-[#FFDE4D] text-black border-2 border-black px-2 py-0.5 text-[9px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
-                      {/* 🔥 PERBAIKAN: Di sini sekarang sudah murni {t} */}
                       {t}
                     </span>
                   ))}
@@ -256,8 +257,36 @@ function ProjekContent() {
 
 /**
  * 🏠 HALAMAN UTAMA LAYOUT INDUK
+ * + AUTENTIKASI CLIENT SIDE
  */
 export default function ProjekPage() {
+  const router = useRouter()
+  const [isLoading, setIsLoading] = useState(true)
+
+  useEffect(() => {
+    const checkUser = async () => {
+      const supabase = createClient()
+      const { data: { user } } = await supabase.auth.getUser()
+
+      if (!user) {
+        router.push('/')  // redirect jika tidak login
+      } else {
+        setIsLoading(false) // user valid, tampilkan halaman
+      }
+    }
+
+    checkUser()
+  }, [router])
+
+  // Tampilkan loading sambil verifikasi auth
+  if (isLoading) {
+    return (
+      <div className="bg-[#FFDE4D] min-h-screen flex items-center justify-center">
+        <div className="animate-pulse text-black font-black text-xl uppercase tracking-wider">Memeriksa akses...</div>
+      </div>
+    )
+  }
+
   return (
     <div className="bg-[#FFDE4D] min-h-screen font-sans text-black w-full pt-24 md:pt-32 pb-28 md:pb-16 relative overflow-x-hidden selection:bg-black selection:text-[#FFDE4D]">
       

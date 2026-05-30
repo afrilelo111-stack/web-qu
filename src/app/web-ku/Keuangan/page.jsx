@@ -2,6 +2,8 @@ import { Suspense } from 'react'
 import { getKeuanganData } from '../actions'
 import Navbar from '@/app/web-ku/components/nav' 
 import KeuanganClientContainer from './KeuanganClientContainer' // 👈 Kita panggil kontainer client di sini
+import {createClient} from '@/lib/supabase/serve'
+import { redirect } from "next/navigation";
 
 export const dynamic = 'force-dynamic'
 
@@ -26,6 +28,16 @@ function KeuanganSkeleton() {
 }
 
 async function KeuanganContent() {
+  const supabase = await createClient();
+  // 1. KEAMANAN UTAMA: Validasi user terlebih dahulu sebelum memproses data server
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/");
+  }
+
   // Fetching data langsung terjadi di sisi server (lebih aman & cepat)
   const { laptop, logs } = await getKeuanganData()
 
