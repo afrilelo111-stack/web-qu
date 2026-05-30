@@ -27,6 +27,7 @@ function ProjectImageSlider({ image1, image2, title }) {
     }, 3000)
 
     return () => clearInterval(interval)
+    // ⚙️ Diperbaiki: Menggunakan panjang array statis agar tidak loop interval baru
   }, [availableImages.length])
 
   if (availableImages.length === 0) {
@@ -70,10 +71,10 @@ function ProjectImageSlider({ image1, image2, title }) {
  */
 function ProjekSkeleton() {
   return (
-    <div className="animate-pulse space-y-8 relative z-10">
+    <div className="space-y-8 relative z-10">
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
         {[1, 2, 3].map((i) => (
-          <div key={i} className="w-full bg-neutral-200 border-4 border-black h-80 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)]" />
+          <div key={i} className="w-full bg-neutral-300 border-4 border-black h-80 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] animate-pulse" />
         ))}
       </div>
     </div>
@@ -95,7 +96,6 @@ function ProjekContent() {
 
   return (
     <div className="relative z-10 space-y-8">
-      
       {/* HEADER INFO */}
       <div className="bg-white border-4 border-black p-5 shadow-[8px_8px_0px_0px_rgba(0,0,0,1)] flex items-center justify-between">
         <div>
@@ -163,12 +163,10 @@ function ProjekContent() {
         })}
       </div>
 
-      {/* ====================================================================== */}
       {/* 🔮 INTERAKTIF POP-UP MODAL */}
-      {/* ====================================================================== */}
       {activeProject && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs">
-          <div className="bg-[#ff7675] border-4 border-black w-full max-w-2xl shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col relative animate-[scaleUp_0.2s_ease-out]">
+          <div className="bg-[#ff7675] border-4 border-black w-full max-w-2xl shadow-[12px_12px_0px_0px_rgba(0,0,0,1)] overflow-hidden flex flex-col relative">
             
             {/* Header Pop-up */}
             <div className="bg-black text-white p-4 flex items-center justify-between border-b-4 border-black">
@@ -186,7 +184,6 @@ function ProjekContent() {
 
             {/* Konten Isi Pop-up */}
             <div className="p-6 space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar">
-              {/* Gambar Besar */}
               <div className="w-full h-48 sm:h-60 border-4 border-black bg-white overflow-hidden relative shadow-[6px_6px_0px_0px_rgba(0,0,0,1)] flex items-center justify-center">
                 <ProjectImageSlider 
                   image1={activeProject.image1} 
@@ -195,7 +192,6 @@ function ProjekContent() {
                 />
               </div>
 
-              {/* Judul & Tech Stack */}
               <div>
                 <h4 className="text-2xl font-black uppercase tracking-tight text-white drop-shadow-[2.5px_2.5px_0px_rgba(0,0,0,1)] mb-2">
                   {activeProject.title}
@@ -203,7 +199,7 @@ function ProjekContent() {
                 <div className="flex flex-wrap gap-1.5 items-center">
                   <Code2 size={14} className="text-black" />
                   {activeProject.tech.map((t) => (
-                    <span key={t} className="bg-[#FFDE4D] text-black border-2 border-black px-2 py-0.5 text-[9px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(0,0,0,1)]">
+                    <span key={t} className="bg-[#FFDE4D] text-black border-2 border-black px-2 py-0.5 text-[9px] font-black uppercase shadow-[2px_2px_0px_0px_rgba(255,255,255,1)]">
                       {t}
                     </span>
                   ))}
@@ -212,7 +208,6 @@ function ProjekContent() {
 
               <hr className="border-t-2 border-black border-dashed" />
 
-              {/* Deskripsi Penuh */}
               <div>
                 <h5 className="text-xs font-black uppercase text-black mb-1">Deskripsi Sistem:</h5>
                 <p className="text-xs font-bold text-black leading-relaxed uppercase bg-white p-4 border-3 border-black shadow-[4px_4px_0px_0px_rgba(0,0,0,1)] whitespace-pre-line">
@@ -250,18 +245,17 @@ function ProjekContent() {
           </div>
         </div>
       )}
-
     </div>
   )
 }
 
 /**
- * 🏠 HALAMAN UTAMA LAYOUT INDUK
- * + AUTENTIKASI CLIENT SIDE
+ * 🏠 HALAMAN UTAMA LAYOUT INDUK (DENGAN SECURITY GATE)
  */
 export default function ProjekPage() {
   const router = useRouter()
-  const [isLoading, setIsLoading] = useState(true)
+  // 🔐 Ditambahkan state untuk menahan render halaman sebelum auth selesai dicek
+  const [authLoading, setAuthLoading] = useState(true)
 
   useEffect(() => {
     const checkUser = async () => {
@@ -269,23 +263,14 @@ export default function ProjekPage() {
       const { data: { user } } = await supabase.auth.getUser()
 
       if (!user) {
-        router.push('/')  // redirect jika tidak login
+        router.push('/')
       } else {
-        setIsLoading(false) // user valid, tampilkan halaman
+        setAuthLoading(false) // User aman, matikan loading skeleton
       }
     }
 
     checkUser()
   }, [router])
-
-  // Tampilkan loading sambil verifikasi auth
-  if (isLoading) {
-    return (
-      <div className="bg-[#FFDE4D] min-h-screen flex items-center justify-center">
-        <div className="animate-pulse text-black font-black text-xl uppercase tracking-wider">Memeriksa akses...</div>
-      </div>
-    )
-  }
 
   return (
     <div className="bg-[#FFDE4D] min-h-screen font-sans text-black w-full pt-24 md:pt-32 pb-28 md:pb-16 relative overflow-x-hidden selection:bg-black selection:text-[#FFDE4D]">
@@ -297,9 +282,12 @@ export default function ProjekPage() {
       <Navbar />
 
       <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <Suspense fallback={<ProjekSkeleton />}>
+        {/* 🛡️ Menggunakan state lokal untuk mengontrol render skeleton secara presisi */}
+        {authLoading ? (
+          <ProjekSkeleton />
+        ) : (
           <ProjekContent />
-        </Suspense>
+        )}
       </main>
 
     </div>

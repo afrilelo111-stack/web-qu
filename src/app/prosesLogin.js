@@ -28,5 +28,5 @@ export async function login(prevState, formData) {
   }
 
   revalidatePath('/', 'layout')
-  redirect('/web-ku/Keuangan')
+  redirect('/web-ku/keuangan')
 }

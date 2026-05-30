@@ -41,10 +41,9 @@ export default function Navbar() {
   }, [lastScrollY])
 
   const menuItems = [
-    { name: 'Keuangan', href: '/web-ku/Keuangan', icon: Wallet },
-    { name: 'Diary', href: '/web-ku/Notes', icon: BookOpen },
-    { name: 'To-Do', href: '/web-ku/Todo', icon: CheckSquare },
-    { name: 'Projek', href: '/web-ku/Projek', icon: FolderKanban },
+    { name: 'Keuangan', href: '/web-ku/keuangan', icon: Wallet },
+    { name: 'To-Do', href: '/web-ku/todo', icon: CheckSquare },
+    { name: 'Projek', href: '/web-ku/projek', icon: FolderKanban },
   ]
 
   const currentMenu = menuItems.find(item => item.href === pathname)?.name || 'Dashboard'
