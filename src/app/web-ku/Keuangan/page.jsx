@@ -8,10 +8,6 @@ import { redirect } from "next/navigation";
 export const dynamic = 'force-dynamic'
 
 // ✅ Sekarang metadata aman di sini karena ini sudah menjadi Server Component murni
-export const metadata = {
-  title: '💰 Konsol Keuangan | Celengan Digital',
-  description: 'Pantau target tabungan laptop impian secara real-time.',
-}
 
 function KeuanganSkeleton() {
   return (
