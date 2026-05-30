@@ -41,9 +41,9 @@ export default function Navbar() {
   }, [lastScrollY])
 
   const menuItems = [
-    { name: 'Keuangan', href: '/web-ku/keuangan', icon: Wallet },
+    { name: 'Keuangan', href: '/web-ku/Keuangan', icon: Wallet },
     { name: 'To-Do', href: '/web-ku/todo', icon: CheckSquare },
-    { name: 'Projek', href: '/web-ku/projek', icon: FolderKanban },
+    { name: 'Projek', href: '/web-ku/Projek', icon: FolderKanban },
   ]
 
   const currentMenu = menuItems.find(item => item.href === pathname)?.name || 'Dashboard'
