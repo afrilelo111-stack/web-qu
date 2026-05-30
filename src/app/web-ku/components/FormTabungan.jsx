@@ -1,7 +1,7 @@
 'use client'
 
 import { useActionState } from 'react'
-import { addtabungan } from '../actions' // ✅ Memanggil fungsi langsung dari actions.js kamu
+import { addtabungan } from '../actions'
 import { PlusCircle } from 'lucide-react'
 
 export default function FormTabungan() {
